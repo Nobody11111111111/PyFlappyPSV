@@ -101,7 +101,7 @@ function updateObstacles() {
     obstacles = obstacles.filter(obstacle => obstacle.x + obstacle.width > 0);
 
     // Add new obstacle every few frames
-    if (Math.random() < 0.30) { // Adjust obstacle spawn rate as needed
+    if (Math.random() < 0.001) { // Adjust obstacle spawn rate as needed
         const obstacleY = Math.random() * (canvas.height - 200) + 50; // Adjust obstacle position
         obstacles.push({ x: canvas.width, y: obstacleY, width: 100, height: 200 }); // Adjusted obstacle width and height
     }
