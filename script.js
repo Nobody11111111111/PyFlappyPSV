@@ -8,6 +8,10 @@ canvas.height = 600;
 const birdImage = new Image();
 birdImage.src = 'images/dhrubird.png';
 
+// Load Obstacle Image
+const obstacleImage = new Image();
+obstacleImage.src = 'images/pipe.png';
+
 // Load Background Image
 const background = new Image();
 background.src = 'images/FlappyBG.png';
@@ -24,8 +28,7 @@ function drawBird() {
 
 function drawObstacles() {
     obstacles.forEach(obstacle => {
-        context.fillStyle = 'green'; // Set obstacle color
-        context.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+        context.drawImage(obstacleImage, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
     });
 }
 
@@ -35,17 +38,18 @@ function updateBird() {
 
 function updateObstacles() {
     obstacles.forEach(obstacle => {
-        obstacle.x -= 5; // Adjust obstacle speed as needed
+        obstacle.x -= 2; // Reduce obstacle speed
     });
 
     // Remove off-screen obstacles
     obstacles = obstacles.filter(obstacle => obstacle.x + obstacle.width > 0);
 
     // Add new obstacle every few frames
-    if (Math.random() < 0.02) { // Adjust obstacle spawn rate as needed
-        const obstacleHeight = Math.random() * (canvas.height - 200) + 100;
+    if (Math.random() < 0.01) { // Adjust obstacle spawn rate as needed
+        const gap = 200;
+        const obstacleHeight = Math.random() * (canvas.height - gap - 100) + 50; // Adjust obstacle position
         obstacles.push({ x: canvas.width, y: 0, width: 50, height: obstacleHeight });
-        obstacles.push({ x: canvas.width, y: obstacleHeight + 100, width: 50, height: canvas.height - obstacleHeight - 100 });
+        obstacles.push({ x: canvas.width, y: obstacleHeight + gap, width: 50, height: canvas.height - obstacleHeight - gap });
     }
 }
 
