@@ -12,7 +12,7 @@ background.onload = () => {
 };
 
 // Bird
-let bird = { x: 50, y: canvas.height / 2, width: 34, height: 24 };
+let bird = { x: 50, y: canvas.height / 2, width: 34, height: 24, gravity: 0.5, jumpStrength: -10 };
 
 // Obstacles
 let obstacles = [];
@@ -27,6 +27,10 @@ function drawObstacles() {
         context.fillStyle = 'green'; // Set obstacle color
         context.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
     });
+}
+
+function updateBird() {
+    bird.y += bird.gravity;
 }
 
 function updateObstacles() {
@@ -46,9 +50,17 @@ function gameLoop() {
 
     drawBird();
     drawObstacles();
+    updateBird();
     updateObstacles();
 
     requestAnimationFrame(gameLoop);
 }
+
+// Control the bird's jump
+document.addEventListener('keydown', function(event) {
+    if (event.key === ' ' || event.key === 'ArrowUp') { // Jump on Spacebar or Arrow Up
+        bird.y += bird.jumpStrength;
+    }
+});
 
 gameLoop();
