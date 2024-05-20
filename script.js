@@ -17,9 +17,9 @@ const backgroundImage = new Image();
 backgroundImage.src = 'FlappyBG.png'; // Replace 'FlappyBG.png' with your background image file
 
 // Bird
-let bird = { x: 50, y: canvas.height / 2, width: 68, height: 48 }; // Adjusted width and height
+let bird = { x: 50, y: canvas.height / 2, width: 100, height: 100 }; // Adjusted width and height
 let gravity = 0.3;
-let jumpStrength = -6; // Adjusted jump strength
+let jumpStrength = -1; // Adjusted jump strength
 
 // Obstacles
 let obstacles = [];
@@ -53,9 +53,8 @@ function updateObstacles() {
 
     // Add new obstacle every few frames
     if (Math.random() < 0.01) { // Adjust obstacle spawn rate as needed
-        const obstacleHeight = Math.random() * (canvas.height - 200) + 50; // Adjust obstacle position
-        obstacles.push({ x: canvas.width, y: 0, width: 70, height: obstacleHeight }); // Adjusted obstacle width
-        obstacles.push({ x: canvas.width, y: obstacleHeight + 200, width: 70, height: canvas.height - obstacleHeight - 200 }); // Adjusted obstacle width and gap
+        const obstacleY = Math.random() * (canvas.height - 200) + 50; // Adjust obstacle position
+        obstacles.push({ x: canvas.width, y: obstacleY, width: 100, height: 200 }); // Adjusted obstacle width and height
     }
 }
 
