@@ -6,15 +6,15 @@ canvas.height = 600;
 
 // Load Bird Image
 const birdImage = new Image();
-birdImage.src = 'images/dhrubird.png'; // Replace 'dhrubird.png' with your bird image file
+birdImage.src = 'dhrubird.png'; // Replace 'dhrubird.png' with your bird image file
 
 // Load Obstacle Image
 const obstacleImage = new Image();
-obstacleImage.src = 'images/pipe.png'; // Replace 'pipe.png' with your obstacle image file
+obstacleImage.src = 'pipe.png'; // Replace 'pipe.png' with your obstacle image file
 
 // Load Background Image
 const backgroundImage = new Image();
-backgroundImage.src = 'images/FlappyBG.png'; // Replace 'FlappyBG.png' with your background image file
+backgroundImage.src = 'FlappyBG.png'; // Replace 'FlappyBG.png' with your background image file
 
 // Bird
 let bird = { x: 50, y: canvas.height / 2, width: 100, height: 100 }; // Adjusted width and height
