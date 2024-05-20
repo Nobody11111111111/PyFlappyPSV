@@ -18,9 +18,12 @@ backgroundImage.src = 'FlappyBG.png'; // Replace 'FlappyBG.png' with your backgr
 
 // Bird
 let bird = { x: 50, y: canvas.height / 2, width: 68, height: 48 }; // Adjusted width and height
+let gravity = 0.3;
+let jumpStrength = -6; // Adjusted jump strength
 
 // Obstacles
 let obstacles = [];
+let obstacleSpeed = 2; // Adjusted obstacle speed
 
 function drawBird() {
     context.drawImage(birdImage, bird.x, bird.y, bird.width, bird.height);
@@ -33,12 +36,16 @@ function drawObstacles() {
 }
 
 function updateBird() {
-    bird.y += 2; // Adjust bird speed
+    bird.y += gravity;
+}
+
+function jump() {
+    bird.y += jumpStrength;
 }
 
 function updateObstacles() {
     obstacles.forEach(obstacle => {
-        obstacle.x -= 5; // Adjust obstacle speed
+        obstacle.x -= obstacleSpeed;
     });
 
     // Remove off-screen obstacles
@@ -46,10 +53,9 @@ function updateObstacles() {
 
     // Add new obstacle every few frames
     if (Math.random() < 0.01) { // Adjust obstacle spawn rate as needed
-        const gap = 200;
-        const obstacleHeight = Math.random() * (canvas.height - gap - 200) + 100; // Adjust obstacle position and scale
-        obstacles.push({ x: canvas.width, y: 0, width: 100, height: obstacleHeight }); // Adjusted obstacle width
-        obstacles.push({ x: canvas.width, y: obstacleHeight + gap, width: 100, height: canvas.height - obstacleHeight - gap }); // Adjusted obstacle width
+        const obstacleHeight = Math.random() * (canvas.height - 200) + 50; // Adjust obstacle position
+        obstacles.push({ x: canvas.width, y: 0, width: 70, height: obstacleHeight }); // Adjusted obstacle width
+        obstacles.push({ x: canvas.width, y: obstacleHeight + 200, width: 70, height: canvas.height - obstacleHeight - 200 }); // Adjusted obstacle width and gap
     }
 }
 
@@ -88,3 +94,10 @@ function gameLoop() {
 }
 
 const gameLoopId = setInterval(gameLoop, 1000 / 60); // Run game loop at 60 FPS
+
+// Event listener for jump
+document.addEventListener('keydown', event => {
+    if (event.code === 'Space') {
+        jump();
+    }
+});
