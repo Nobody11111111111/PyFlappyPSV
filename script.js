@@ -17,7 +17,7 @@ const background = new Image();
 background.src = 'images/FlappyBG.png';
 
 // Bird
-let bird = { x: 50, y: canvas.height / 2, width: 34, height: 24, gravity: 0.5, jumpStrength: -10 };
+let bird = { x: 50, y: canvas.height / 2, width: 68, height: 48, gravity: 0.5, jumpStrength: -10 }; // Adjusted width and height
 
 // Obstacles
 let obstacles = [];
@@ -47,10 +47,32 @@ function updateObstacles() {
     // Add new obstacle every few frames
     if (Math.random() < 0.01) { // Adjust obstacle spawn rate as needed
         const gap = 200;
-        const obstacleHeight = Math.random() * (canvas.height - gap - 100) + 50; // Adjust obstacle position
-        obstacles.push({ x: canvas.width, y: 0, width: 50, height: obstacleHeight });
-        obstacles.push({ x: canvas.width, y: obstacleHeight + gap, width: 50, height: canvas.height - obstacleHeight - gap });
+        const obstacleHeight = Math.random() * (canvas.height - gap - 200) + 100; // Adjust obstacle position and scale
+        obstacles.push({ x: canvas.width, y: 0, width: 100, height: obstacleHeight }); // Adjusted obstacle width
+        obstacles.push({ x: canvas.width, y: obstacleHeight + gap, width: 100, height: canvas.height - obstacleHeight - gap }); // Adjusted obstacle width
     }
+}
+
+function checkCollisions() {
+    obstacles.forEach(obstacle => {
+        if (bird.x < obstacle.x + obstacle.width &&
+            bird.x + bird.width > obstacle.x &&
+            bird.y < obstacle.y + obstacle.height &&
+            bird.y + bird.height > obstacle.y) {
+            gameOver();
+        }
+    });
+}
+
+function gameOver() {
+    // Stop game logic
+    clearInterval(gameLoopId);
+
+    // Display game over screen
+    context.fillStyle = 'black';
+    context.font = '30px Arial';
+    context.fillText('Game Over', 180, canvas.height / 2 - 50);
+    context.fillText('Dhru eventually answered a question!', 50, canvas.height / 2);
 }
 
 function gameLoop() {
@@ -63,8 +85,7 @@ function gameLoop() {
     drawObstacles();
     updateBird();
     updateObstacles();
-
-    requestAnimationFrame(gameLoop);
+    checkCollisions();
 }
 
 // Control the bird's jump
@@ -74,4 +95,4 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-gameLoop();
+const gameLoopId = setInterval(gameLoop, 1000 / 60); // Run game loop at 60 FPS
