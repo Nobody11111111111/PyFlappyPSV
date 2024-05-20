@@ -1,126 +1,102 @@
-// Initialize canvas and context
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+const canvas = document.getElementById('gameCanvas');
+const context = canvas.getContext('2d');
 
-// Bird properties
-const bird = {
-    x: 50,
-    y: canvas.height / 2 - 12, // Adjust the y-coordinate as needed
-    width: 100, // Adjust the width as needed
-    height: 100, // Adjust the height as needed
-    velocity: 0,
-    gravity: 0.5,
-    jumpStrength: -1 // Adjust the jump strength as needed
-};
+canvas.width = 500;
+canvas.height = 600;
 
-// Obstacle properties
-const obstacleWidth = 100; // Adjust the width as needed
-const obstacleGap = 200; // Adjust the gap between obstacles as needed
-let obstacles = [];
-
-// Load images
+// Load Bird Image
 const birdImage = new Image();
-birdImage.src = 'dhrubird.png'; // Replace 'dhrubird.png' with the correct path to your bird image
+birdImage.src = 'dhrubird.png'; // Replace 'dhrubird.png' with your bird image file
 
+// Load Obstacle Image
 const obstacleImage = new Image();
-obstacleImage.src = 'pipe.png'; // Replace 'pipe.png' with the correct path to your obstacle image
+obstacleImage.src = 'pipe.png'; // Replace 'pipe.png' with your obstacle image file
 
+// Load Background Image
 const backgroundImage = new Image();
-backgroundImage.src = 'FlappyBG.png'; // Replace 'FlappyBG.png' with the correct path to your background image
+backgroundImage.src = 'FlappyBG.png'; // Replace 'FlappyBG.png' with your background image file
 
-// Draw images
-function draw() {
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+// Bird
+let bird = { x: 50, y: canvas.height / 2, width: 100, height: 100 }; // Adjusted width and height
+let gravity = 0.3;
+let jumpStrength = -1; // Adjusted jump strength
 
-    // Draw background
-    ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+// Obstacles
+let obstacles = [];
+let obstacleSpeed = 2; // Adjusted obstacle speed
 
-    // Draw bird
-    ctx.drawImage(birdImage, bird.x, bird.y, bird.width, bird.height);
-
-    // Draw obstacles
-    for (let obstacle of obstacles) {
-        ctx.drawImage(obstacleImage, obstacle.x, obstacle.y, obstacleWidth, obstacle.height);
-    }
+function drawBird() {
+    context.drawImage(birdImage, bird.x, bird.y, bird.width, bird.height);
 }
 
-// Main game loop
-function gameLoop() {
-    draw();
+function drawObstacles() {
+    obstacles.forEach(obstacle => {
+        context.drawImage(obstacleImage, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+    });
+}
 
-    // Move bird
-    bird.velocity += bird.gravity;
-    bird.y += bird.velocity;
+function updateBird() {
+    bird.y += gravity;
+}
 
-    // Spawn obstacles
-    if (Math.random() < 0.02) {
-        obstacles.push({
-            x: canvas.width,
-            y: Math.random() * (canvas.height - obstacleGap),
-            height: Math.random() * (canvas.height - obstacleGap),
-        });
-    }
+function jump() {
+    bird.y += jumpStrength;
+}
 
-    // Move obstacles
-    for (let obstacle of obstacles) {
-        obstacle.x -= 2; // Adjust obstacle speed as needed
-    }
+function updateObstacles() {
+    obstacles.forEach(obstacle => {
+        obstacle.x -= obstacleSpeed;
+    });
 
     // Remove off-screen obstacles
-    obstacles = obstacles.filter(obstacle => obstacle.x + obstacleWidth > 0);
+    obstacles = obstacles.filter(obstacle => obstacle.x + obstacle.width > 0);
 
-    // Check for collisions
-    for (let obstacle of obstacles) {
-        if (
-            bird.x < obstacle.x + obstacleWidth &&
-            bird.x + bird.width > obstacle.x &&
-            bird.y < obstacle.y + obstacle.height &&
-            bird.y + bird.height > obstacle.y
-        ) {
-            gameOver();
-        }
+    // Add new obstacle every few frames
+    if (Math.random() < 0.01) { // Adjust obstacle spawn rate as needed
+        const obstacleY = Math.random() * (canvas.height - 200) + 50; // Adjust obstacle position
+        obstacles.push({ x: canvas.width, y: obstacleY, width: 100, height: 200 }); // Adjusted obstacle width and height
     }
-
-    requestAnimationFrame(gameLoop);
 }
 
-// Game over function
-function gameOver() {
-    // Stop game loop
-    cancelAnimationFrame(gameLoop);
-
-    // Display game over message
-    ctx.fillStyle = '#000';
-    ctx.font = '30px Arial';
-    ctx.fillText('Game Over', canvas.width / 2 - 80, canvas.height / 2);
-
-    // Display restart button
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(canvas.width / 2 - 50, canvas.height / 2 + 50, 100, 50);
-    ctx.fillStyle = '#000';
-    ctx.fillText('Restart', canvas.width / 2 - 35, canvas.height / 2 + 85);
-
-    // Restart game on button click
-    canvas.addEventListener('click', function(event) {
-        if (
-            event.clientX > canvas.width / 2 - 50 &&
-            event.clientX < canvas.width / 2 + 50 &&
-            event.clientY > canvas.height / 2 + 50 &&
-            event.clientY < canvas.height / 2 + 100
-        ) {
-            startGame();
+function checkCollisions() {
+    obstacles.forEach(obstacle => {
+        if (bird.x < obstacle.x + obstacle.width &&
+            bird.x + bird.width > obstacle.x &&
+            bird.y < obstacle.y + obstacle.height &&
+            bird.y + bird.height > obstacle.y) {
+            gameOver();
         }
     });
 }
 
-// Start game
-function startGame() {
-    bird.y = canvas.height / 2 - 12;
-    bird.velocity = 0;
-    obstacles = [];
-    gameLoop();
+function gameOver() {
+    // Stop game logic
+    clearInterval(gameLoopId);
+
+    // Display game over message
+    context.fillStyle = 'black';
+    context.font = '30px Arial';
+    context.fillText('Game Over', 180, canvas.height / 2 - 50);
 }
 
-// Start game initially
-startGame();
+function gameLoop() {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw background
+    context.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+
+    drawBird();
+    drawObstacles();
+    updateBird();
+    updateObstacles();
+    checkCollisions();
+}
+
+const gameLoopId = setInterval(gameLoop, 1000 / 60); // Run game loop at 60 FPS
+
+// Event listener for jump
+document.addEventListener('keydown', event => {
+    if (event.code === 'Space') {
+        jump();
+    }
+});
