@@ -6,18 +6,18 @@ canvas.height = 600;
 
 // Load Bird Image
 const birdImage = new Image();
-birdImage.src = 'images/dhrubird.png';
+birdImage.src = 'dhrubird.png'; // Replace 'dhrubird.png' with your bird image file
 
 // Load Obstacle Image
 const obstacleImage = new Image();
-obstacleImage.src = 'images/pipe.png';
+obstacleImage.src = 'pipe.png'; // Replace 'pipe.png' with your obstacle image file
 
 // Load Background Image
-const background = new Image();
-background.src = 'images/FlappyBG.png';
+const backgroundImage = new Image();
+backgroundImage.src = 'FlappyBG.png'; // Replace 'FlappyBG.png' with your background image file
 
 // Bird
-let bird = { x: 50, y: canvas.height / 2, width: 68, height: 48, gravity: 0.5, jumpStrength: -10 }; // Adjusted width and height
+let bird = { x: 50, y: canvas.height / 2, width: 68, height: 48 }; // Adjusted width and height
 
 // Obstacles
 let obstacles = [];
@@ -33,12 +33,12 @@ function drawObstacles() {
 }
 
 function updateBird() {
-    bird.y += bird.gravity;
+    bird.y += 2; // Adjust bird speed
 }
 
 function updateObstacles() {
     obstacles.forEach(obstacle => {
-        obstacle.x -= 2; // Reduce obstacle speed
+        obstacle.x -= 5; // Adjust obstacle speed
     });
 
     // Remove off-screen obstacles
@@ -68,18 +68,17 @@ function gameOver() {
     // Stop game logic
     clearInterval(gameLoopId);
 
-    // Display game over screen
+    // Display game over message
     context.fillStyle = 'black';
     context.font = '30px Arial';
     context.fillText('Game Over', 180, canvas.height / 2 - 50);
-    context.fillText('Dhru eventually answered a question!', 50, canvas.height / 2);
 }
 
 function gameLoop() {
     context.clearRect(0, 0, canvas.width, canvas.height);
 
     // Draw background
-    context.drawImage(background, 0, 0, canvas.width, canvas.height);
+    context.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
 
     drawBird();
     drawObstacles();
@@ -87,12 +86,5 @@ function gameLoop() {
     updateObstacles();
     checkCollisions();
 }
-
-// Control the bird's jump
-document.addEventListener('keydown', function(event) {
-    if (event.key === ' ' || event.key === 'ArrowUp') { // Jump on Spacebar or Arrow Up
-        bird.y += bird.jumpStrength;
-    }
-});
 
 const gameLoopId = setInterval(gameLoop, 1000 / 60); // Run game loop at 60 FPS
