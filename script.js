@@ -4,12 +4,13 @@ const context = canvas.getContext('2d');
 canvas.width = 500;
 canvas.height = 600;
 
-// Background Image
+// Load Bird Image
+const birdImage = new Image();
+birdImage.src = 'images/dhrubird.png';
+
+// Load Background Image
 const background = new Image();
 background.src = 'images/FlappyBG.png';
-background.onload = () => {
-    context.drawImage(background, 0, 0, canvas.width, canvas.height);
-};
 
 // Bird
 let bird = { x: 50, y: canvas.height / 2, width: 34, height: 24, gravity: 0.5, jumpStrength: -10 };
@@ -18,8 +19,7 @@ let bird = { x: 50, y: canvas.height / 2, width: 34, height: 24, gravity: 0.5, j
 let obstacles = [];
 
 function drawBird() {
-    context.fillStyle = 'red'; // Set bird color
-    context.fillRect(bird.x, bird.y, bird.width, bird.height);
+    context.drawImage(birdImage, bird.x, bird.y, bird.width, bird.height);
 }
 
 function drawObstacles() {
@@ -38,8 +38,15 @@ function updateObstacles() {
         obstacle.x -= 5; // Adjust obstacle speed as needed
     });
 
-    // Add new obstacles or remove off-screen ones as necessary
-    // Add code here to generate new obstacles
+    // Remove off-screen obstacles
+    obstacles = obstacles.filter(obstacle => obstacle.x + obstacle.width > 0);
+
+    // Add new obstacle every few frames
+    if (Math.random() < 0.02) { // Adjust obstacle spawn rate as needed
+        const obstacleHeight = Math.random() * (canvas.height - 200) + 100;
+        obstacles.push({ x: canvas.width, y: 0, width: 50, height: obstacleHeight });
+        obstacles.push({ x: canvas.width, y: obstacleHeight + 100, width: 50, height: canvas.height - obstacleHeight - 100 });
+    }
 }
 
 function gameLoop() {
