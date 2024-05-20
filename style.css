@@ -1,0 +1,13 @@
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: url('images/FlappyBG.png') no-repeat center center fixed;
+    background-size: cover;
+}
+
+canvas {
+    border: 1px solid black;
+}
