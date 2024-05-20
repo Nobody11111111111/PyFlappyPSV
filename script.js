@@ -19,7 +19,7 @@ backgroundImage.src = 'images/FlappyBG.png'; // Replace 'FlappyBG.png' with your
 // Bird
 let bird = { x: 50, y: canvas.height / 2, width: 100, height: 100 }; // Adjusted width and height
 let gravity = 0.3;
-let jumpStrength = -1; // Adjusted jump strength
+let jumpStrength = 6; // Adjusted jump strength
 
 // Obstacles
 let obstacles = [];
